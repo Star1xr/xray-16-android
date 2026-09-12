@@ -75,7 +75,7 @@ void _initialize_cpu()
     listFeature("AltiVec", SDL_HasAltiVec());
     listFeature("ARMSIMD", SDL_HasARMSIMD());
     listFeature("NEON",    SDL_HasNEON());
-#if SDL_VERSION_ATLEAST(2, 24, 0)
+#if SDL_VERSION_ATLEAST(2, 24, 0) && !defined(__aarch64__)
     listFeature("LSX",     SDL_HasLSX());
     listFeature("LASX",    SDL_HasLASX());
 #endif

@@ -42,7 +42,7 @@ target_link_libraries(xr_3da
 )
 
 if (ANDROID)
-    target_link_libraries(xr_3da PRIVATE GLESv2 EGL)
+    target_link_libraries(xr_3da PRIVATE GLESv3 EGL)
 endif()
 
 if (NOT ANDROID)
