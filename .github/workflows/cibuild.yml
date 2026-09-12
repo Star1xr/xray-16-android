@@ -127,26 +127,15 @@ jobs:
         export AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
         export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
         export STRIP=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
+        export cross_compiling=yes
         ./autogen.sh
-        ./configure --host=aarch64-linux-android --prefix=$GITHUB_WORKSPACE/android-deps \
+        ./configure --build=x86_64-pc-linux-gnu --host=aarch64-linux-android \
+          --prefix=$GITHUB_WORKSPACE/android-deps \
           --disable-examples --disable-doc --disable-spec
         make -j$(nproc)
         make install
 
     - name: Build LZO
-      run: |
-        cd /tmp
-        wget -q http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz
-        tar xzf lzo-2.10.tar.gz
-        cd lzo-2.10
-        export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
-        export AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
-        export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
-        ./configure --host=aarch64-linux-android --enable-static --disable-shared
-        make -j$(nproc)
-        mkdir -p $GITHUB_WORKSPACE/android-deps/include/lzo
-        cp include/lzo/*.h $GITHUB_WORKSPACE/android-deps/include/lzo/
-        cp src/.libs/liblzo2.a $GITHUB_WORKSPACE/android-deps/lib/
 
     - name: Configure CMake for Android
       run: |
