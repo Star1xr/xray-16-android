@@ -155,6 +155,18 @@ jobs:
         cp include/lzo/*.h $GITHUB_WORKSPACE/android-deps/include/lzo/
         cp src/.libs/liblzo2.a $GITHUB_WORKSPACE/android-deps/lib/
 
+    - name: Build Lua 5.1
+      run: |
+        cd /tmp
+        curl -L -o lua-5.1.5.tar.gz https://www.lua.org/ftp/lua-5.1.5.tar.gz
+        tar xzf lua-5.1.5.tar.gz
+        cd lua-5.1.5
+        export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
+        export AR="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar rcu"
+        export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
+        make posix CC="$CC" AR="$AR" RANLIB="$RANLIB" MYCFLAGS="-I$GITHUB_WORKSPACE/android-deps/include" MYLDFLAGS="-L$GITHUB_WORKSPACE/android-deps/lib" INSTALL_TOP=$GITHUB_WORKSPACE/android-deps
+        make install
+
     - name: Configure CMake for Android
       run: |
         cmake -B build \
@@ -167,6 +179,8 @@ jobs:
           -DXRAY_USE_LUAJIT=OFF \
           -DXRAY_USE_GLES=ON \
           -DCMAKE_UNITY_BUILD=ON \
+          -DLUA_INCLUDE_DIR=$GITHUB_WORKSPACE/android-deps/include/lua/5.1 \
+          -DLUA_LIBRARY=$GITHUB_WORKSPACE/android-deps/lib/liblua.a \
           --log-level VERBOSE
 
     - name: Build
