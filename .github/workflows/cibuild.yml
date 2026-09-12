@@ -127,9 +127,7 @@ jobs:
         export AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
         export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
         export STRIP=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
-        export cross_compiling=yes
-        ./autogen.sh
-        ./configure --build=x86_64-pc-linux-gnu --host=aarch64-linux-android \
+        ./autogen.sh --build=x86_64-pc-linux-gnu --host=aarch64-linux-android \
           --prefix=$GITHUB_WORKSPACE/android-deps \
           --disable-examples --disable-doc --disable-spec
         make -j$(nproc)
