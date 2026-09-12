@@ -201,6 +201,12 @@ elseif (ANDROID)
             INTERFACE_INCLUDE_DIRECTORIES "${VORBIS_INCLUDE_DIR}"
         )
 
+        add_library(Vorbis::VorbisFile STATIC IMPORTED)
+        set_target_properties(Vorbis::VorbisFile PROPERTIES
+            IMPORTED_LOCATION "${ANDROID_DEPS_DIR}/lib/libvorbisfile.a"
+            INTERFACE_INCLUDE_DIRECTORIES "${VORBIS_INCLUDE_DIR}"
+        )
+
         add_library(LZO::LZO STATIC IMPORTED)
         set_target_properties(LZO::LZO PROPERTIES
             IMPORTED_LOCATION "${LZO_LIBRARY}"
