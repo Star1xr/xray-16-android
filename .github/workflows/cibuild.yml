@@ -136,7 +136,7 @@ jobs:
         export AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
         export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
         export STRIP=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
-        export CFLAGS="-I$GITHUB_WORKSPACE/android-deps/include"
+        export CFLAGS="-I$GITHUB_WORKSPACE/android-deps/include -fPIC"
         export LDFLAGS="-L$GITHUB_WORKSPACE/android-deps/lib"
         export PKG_CONFIG_PATH=$GITHUB_WORKSPACE/android-deps/lib/pkgconfig
         ./autogen.sh --build=x86_64-pc-linux-gnu --host=aarch64-linux-android \

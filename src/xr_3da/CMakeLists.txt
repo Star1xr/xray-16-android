@@ -41,6 +41,10 @@ target_link_libraries(xr_3da
     xrGame
 )
 
+if (ANDROID)
+    target_link_libraries(xr_3da PRIVATE GLESv2 EGL)
+endif()
+
 if (NOT ANDROID)
     set_target_properties(xr_3da PROPERTIES
         PREFIX ""
