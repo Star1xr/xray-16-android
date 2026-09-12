@@ -119,6 +119,8 @@ if (ANDROID)
     if (NOT BUILD_SHARED_LIBS)
         add_definitions(-DXRAY_STATIC_BUILD)
     endif()
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+    add_compile_options(-ftls-model=global-dynamic)
 endif()
 
 if (PROJECT_PLATFORM_ARM)
