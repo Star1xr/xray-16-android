@@ -183,7 +183,7 @@ jobs:
           -DXRAY_USE_LUAJIT=OFF \
           -DXRAY_USE_GLES=ON \
           -DCMAKE_UNITY_BUILD=ON \
-          -DLUA_INCLUDE_DIR=$GITHUB_WORKSPACE/android-deps/include/lua/5.1 \
+          -DLUA_INCLUDE_DIR=$GITHUB_WORKSPACE/android-deps/include \
           -DLUA_LIBRARY=$GITHUB_WORKSPACE/android-deps/lib/liblua.a \
           --log-level VERBOSE
 
