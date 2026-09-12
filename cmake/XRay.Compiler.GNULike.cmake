@@ -177,11 +177,46 @@ elseif (ANDROID)
         set(VORBIS_FOUND TRUE)
         set(LZO_FOUND TRUE)
 
+        add_library(SDL2::SDL2 SHARED IMPORTED)
+        set_target_properties(SDL2::SDL2 PROPERTIES
+            IMPORTED_LOCATION "${SDL2_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}"
+        )
+
+        add_library(OpenAL::OpenAL SHARED IMPORTED)
+        set_target_properties(OpenAL::OpenAL PROPERTIES
+            IMPORTED_LOCATION "${OPENAL_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${OPENAL_INCLUDE_DIR}"
+        )
+
+        add_library(Ogg::Ogg STATIC IMPORTED)
+        set_target_properties(Ogg::Ogg PROPERTIES
+            IMPORTED_LOCATION "${OGG_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${OGG_INCLUDE_DIR}"
+        )
+
+        add_library(Vorbis::Vorbis STATIC IMPORTED)
+        set_target_properties(Vorbis::Vorbis PROPERTIES
+            IMPORTED_LOCATION "${VORBIS_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${VORBIS_INCLUDE_DIR}"
+        )
+
+        add_library(LZO::LZO STATIC IMPORTED)
+        set_target_properties(LZO::LZO PROPERTIES
+            IMPORTED_LOCATION "${LZO_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${LZO_INCLUDE_DIR}"
+        )
+
         if (EXISTS "${ANDROID_DEPS_DIR}/include/theora/theora.h")
             set(THEORA_INCLUDE_DIR "${ANDROID_DEPS_DIR}/include/theora" CACHE PATH "")
             set(THEORA_LIBRARY "${ANDROID_DEPS_DIR}/lib/libtheora.a" CACHE FILEPATH "")
             set(THEORA_FOUND TRUE)
             message(STATUS "Theora: FOUND")
+            add_library(Theora::Theora STATIC IMPORTED)
+            set_target_properties(Theora::Theora PROPERTIES
+                IMPORTED_LOCATION "${THEORA_LIBRARY}"
+                INTERFACE_INCLUDE_DIRECTORIES "${THEORA_INCLUDE_DIR}"
+            )
         else()
             set(THEORA_FOUND FALSE)
             message(STATUS "Theora: NOT FOUND (optional)")
