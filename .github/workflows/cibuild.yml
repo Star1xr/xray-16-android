@@ -29,19 +29,15 @@ jobs:
     - name: Init submodules
       run: |
         git submodule update --init --recursive
+
+    - name: Patch submodules for Android
+      run: |
         # Fix pthread_cancel not available on Android bionic
-        python3 -c "
-import re
-f = 'Externals/GameSpy/src/GameSpy/common/linux/gsThreadLinux.c'
-with open(f) as fh: c = fh.read()
-c = c.replace(
-    '\tif (pthread_cancel(id.thread) != PTHREAD_NO_ERROR) {\n\t\t//there was an error - how should we handle these? or should we?\n\t\tgsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc, GSIDebugLevel_WarmError,\n\t\t\t\"Failed to cancel thread\\r\\n\");\n\t}',
-    '#ifndef __ANDROID__\n\tif (pthread_cancel(id.thread) != PTHREAD_NO_ERROR) {\n\t\t//there was an error - how should we handle these? or should we?\n\t\tgsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc, GSIDebugLevel_WarmError,\n\t\t\t\"Failed to cancel thread\\r\\n\");\n\t}\n#endif'
-)
-with open(f, 'w') as fh: fh.write(c)
-"
+        FILE=Externals/GameSpy/src/GameSpy/common/linux/gsThreadLinux.c
+        sed -i '52i\#ifndef __ANDROID__' "$FILE"
+        sed -i '57a\#endif' "$FILE"
         # Fix luabind not finding Lua include dir
-        sed -i 's/target_link_libraries(xrLuabind PUBLIC ${LUA_LIBRARIES})/target_link_libraries(xrLuabind PUBLIC ${LUA_LIBRARIES})\n    if (LUA_INCLUDE_DIR)\n        target_include_directories(xrLuabind PUBLIC ${LUA_INCLUDE_DIR})\n    endif()/' Externals/luabind/src/CMakeLists.txt
+        sed -i '/target_link_libraries(xrLuabind PUBLIC ${LUA_LIBRARIES})/a\    if (LUA_INCLUDE_DIR)\n        target_include_directories(xrLuabind PUBLIC ${LUA_INCLUDE_DIR})\n    endif()' Externals/luabind/src/CMakeLists.txt
 
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
