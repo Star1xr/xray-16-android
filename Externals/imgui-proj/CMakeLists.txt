@@ -42,5 +42,5 @@ target_compile_definitions(xrImGui
 
 set_target_properties(xrImGui PROPERTIES
     PREFIX ""
-    POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
+    POSITION_INDEPENDENT_CODE ON
 )
