@@ -38,6 +38,8 @@ jobs:
         sed -i '57a\#endif' "$FILE"
         # Fix luabind not finding Lua include dir
         sed -i '/target_link_libraries(xrLuabind PUBLIC ${LUA_LIBRARIES})/a\    if (LUA_INCLUDE_DIR)\n        target_include_directories(xrLuabind PUBLIC ${LUA_INCLUDE_DIR})\n    endif()' Externals/luabind/src/CMakeLists.txt
+        # Fix xrLuaFix not finding Lua include dir
+        sed -i '/target_link_libraries(xrLuaFix PUBLIC Lua51)/a\    if (LUA_INCLUDE_DIR)\n        target_include_directories(xrLuaFix PUBLIC ${LUA_INCLUDE_DIR})\n    endif()' Externals/xrLuaFix/CMakeLists.txt
 
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
