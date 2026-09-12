@@ -122,7 +122,6 @@ if (ANDROID)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -ftls-model=global-dynamic")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -ftls-model=global-dynamic")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,tls-dynamic")
 endif()
 
 if (PROJECT_PLATFORM_ARM)
