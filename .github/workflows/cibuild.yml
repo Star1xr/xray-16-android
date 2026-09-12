@@ -40,6 +40,7 @@ jobs:
         echo "RANLIB=$TC/bin/llvm-ranlib" >> $GITHUB_ENV
         echo "STRIP=$TC/bin/llvm-strip" >> $GITHUB_ENV
         echo "HOST=aarch64-linux-android" >> $GITHUB_ENV
+        sudo apt-get update -qq && sudo apt-get install -qq -y autoconf automake libtool pkg-config
 
     - name: Get SDL2 headers
       run: |
@@ -112,31 +113,21 @@ jobs:
         cp include/vorbis/codec.h $GITHUB_WORKSPACE/android-deps/include/vorbis/
         cp include/vorbis/vorbisfile.h $GITHUB_WORKSPACE/android-deps/include/vorbis/
         cp include/vorbis/vorbisenc.h $GITHUB_WORKSPACE/android-deps/include/vorbis/
-        find build -name "*.a" -exec cp {} $GITHUB_WORKSPACE/android-deps/lib/ \;
+        cp build/lib/libvorbis.a $GITHUB_WORKSPACE/android-deps/lib/
+        cp build/lib/libvorbisfile.a $GITHUB_WORKSPACE/android-deps/lib/
+        cp build/lib/libvorbisenc.a $GITHUB_WORKSPACE/android-deps/lib/
 
     - name: Build libtheora
       run: |
         cd /tmp
         git clone --depth 1 --branch v1.1.1 https://github.com/xiph/theora.git
         cd theora
-        cmake -B build \
-          -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
-          -DANDROID_ABI=${{ matrix.abi }} \
-          -DANDROID_PLATFORM=android-29 \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DBUILD_SHARED_LIBS=OFF \
-          -DBUILD_TESTING=OFF \
-          -DBUILD_EXAMPLES=OFF \
-          -DOGG_INCLUDE_DIR=$GITHUB_WORKSPACE/android-deps/include \
-          -DOGG_LIBRARY=$GITHUB_WORKSPACE/android-deps/lib/libogg.a \
-          -DVORBIS_INCLUDE_DIR=$GITHUB_WORKSPACE/android-deps/include \
-          -DVORBIS_LIBRARY=$GITHUB_WORKSPACE/android-deps/lib/libvorbis.a
-        cmake --build build -j$(nproc)
-        mkdir -p $GITHUB_WORKSPACE/android-deps/include/theora
-        cp include/theora/theora.h $GITHUB_WORKSPACE/android-deps/include/theora/
-        cp include/theora/theoraenc.h $GITHUB_WORKSPACE/android-deps/include/theora/
-        cp include/theora/theoradec.h $GITHUB_WORKSPACE/android-deps/include/theora/
-        find build -name "*.a" -exec cp {} $GITHUB_WORKSPACE/android-deps/lib/ \;
+        ./autogen.sh
+        ./configure --host=$HOST --prefix=$GITHUB_WORKSPACE/android-deps \
+          CC="$CC" AR="$AR" RANLIB="$RANLIB" STRIP="$STRIP" \
+          --disable-examples --disable-doc --disable-spec
+        make -j$(nproc)
+        make install
 
     - name: Build LZO
       run: |
