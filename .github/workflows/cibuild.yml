@@ -94,18 +94,7 @@ jobs:
         cp build/include/ogg/config_types.h $GITHUB_WORKSPACE/android-deps/include/ogg/
         cp build/libogg.a $GITHUB_WORKSPACE/android-deps/lib/
         mkdir -p $GITHUB_WORKSPACE/android-deps/lib/pkgconfig
-        cat > $GITHUB_WORKSPACE/android-deps/lib/pkgconfig/ogg.pc << EOF
-prefix=$GITHUB_WORKSPACE/android-deps
-exec_prefix=\${prefix}
-libdir=\${exec_prefix}/lib
-includedir=\${prefix}/include
-
-Name: ogg
-Description: Ogg Bitstream Library
-Version: 1.3.5
-Libs: -L\${libdir} -logg
-Cflags: -I\${includedir}
-EOF
+        printf "prefix=$GITHUB_WORKSPACE/android-deps\nexec_prefix=\${prefix}\nlibdir=\${exec_prefix}/lib\nincludedir=\${prefix}/include\n\nName: ogg\nDescription: Ogg Bitstream Library\nVersion: 1.3.5\nLibs: -L\${libdir} -logg\nCflags: -I\${includedir}\n" > $GITHUB_WORKSPACE/android-deps/lib/pkgconfig/ogg.pc
 
     - name: Build libvorbis
       run: |
@@ -129,33 +118,8 @@ EOF
         cp build/lib/libvorbis.a $GITHUB_WORKSPACE/android-deps/lib/
         cp build/lib/libvorbisfile.a $GITHUB_WORKSPACE/android-deps/lib/
         cp build/lib/libvorbisenc.a $GITHUB_WORKSPACE/android-deps/lib/
-        mkdir -p $GITHUB_WORKSPACE/android-deps/lib/pkgconfig
-        cat > $GITHUB_WORKSPACE/android-deps/lib/pkgconfig/vorbis.pc << EOF
-prefix=$GITHUB_WORKSPACE/android-deps
-exec_prefix=\${prefix}
-libdir=\${exec_prefix}/lib
-includedir=\${prefix}/include
-
-Name: vorbis
-Description: Vorbis general audio compression codec
-Version: 1.3.7
-Requires: ogg
-Libs: -L\${libdir} -lvorbis
-Cflags: -I\${includedir}
-EOF
-        cat > $GITHUB_WORKSPACE/android-deps/lib/pkgconfig/vorbisfile.pc << EOF
-prefix=$GITHUB_WORKSPACE/android-deps
-exec_prefix=\${prefix}
-libdir=\${exec_prefix}/lib
-includedir=\${prefix}/include
-
-Name: vorbisfile
-Description: Vorbis file library
-Version: 1.3.7
-Requires: vorbis
-Libs: -L\${libdir} -lvorbisfile
-Cflags: -I\${includedir}
-EOF
+        printf "prefix=$GITHUB_WORKSPACE/android-deps\nexec_prefix=\${prefix}\nlibdir=\${exec_prefix}/lib\nincludedir=\${prefix}/include\n\nName: vorbis\nDescription: Vorbis general audio compression codec\nVersion: 1.3.7\nRequires: ogg\nLibs: -L\${libdir} -lvorbis\nCflags: -I\${includedir}\n" > $GITHUB_WORKSPACE/android-deps/lib/pkgconfig/vorbis.pc
+        printf "prefix=$GITHUB_WORKSPACE/android-deps\nexec_prefix=\${prefix}\nlibdir=\${exec_prefix}/lib\nincludedir=\${prefix}/include\n\nName: vorbisfile\nDescription: Vorbis file library\nVersion: 1.3.7\nRequires: vorbis\nLibs: -L\${libdir} -lvorbisfile\nCflags: -I\${includedir}\n" > $GITHUB_WORKSPACE/android-deps/lib/pkgconfig/vorbisfile.pc
 
     - name: Build libtheora
       run: |
