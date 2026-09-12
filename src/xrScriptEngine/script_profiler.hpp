@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LuaCompat.hpp"
 #include "xrCommon/xr_unordered_map.h"
 
 #include "xrScriptEngine.hpp"
