@@ -220,7 +220,7 @@ jobs:
   android:
     name: Android ${{ matrix.configuration }} ${{ matrix.abi }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       CFLAGS: "-w"
       CXXFLAGS: "-w"
@@ -240,16 +240,43 @@ jobs:
       with:
         ndk-version: r26d
 
-    - name: Install dependencies
+    - name: Get SDL2 headers
       run: |
-        sudo apt-get update -qq
-        sudo apt-get install -qq -y \
-            libsdl2-dev \
-            liblzo2-dev \
-            libopenal-dev \
-            libogg-dev \
-            libtheora-dev \
-            libvorbis-dev
+        git clone --depth 1 --branch release-2.28.x \
+          https://github.com/libsdl-org/SDL.git /tmp/SDL
+        mkdir -p android-deps/include/SDL2
+        cp -r /tmp/SDL/include/* android-deps/include/SDL2/
+
+    - name: Get SDL2 prebuilt
+      run: |
+        git clone --depth 1 https://github.com/nillerusr/source-engine-libs.git /tmp/se-libs
+        mkdir -p android-deps/lib
+        cp /tmp/se-libs/android/aarch64/libSDL2.so android-deps/lib/
+
+    - name: Get prebuilt audio libs
+      run: |
+        cd android-deps
+        wget -q https://github.com/akashskypatel/ffmpeg-kit-builders/releases/download/android-aarch64-deps/openal.zip
+        wget -q https://github.com/akashskypatel/ffmpeg-kit-builders/releases/download/android-aarch64-deps/libogg.zip
+        wget -q https://github.com/akashskypatel/ffmpeg-kit-builders/releases/download/android-aarch64-deps/libvorbis.zip
+        wget -q https://github.com/akashskypatel/ffmpeg-kit-builders/releases/download/android-aarch64-deps/libtheora.zip
+        unzip -q openal.zip -d lib/
+        unzip -q libogg.zip -d lib/
+        unzip -q libvorbis.zip -d lib/
+        unzip -q libtheora.zip -d lib/
+
+    - name: Build LZO
+      run: |
+        cd /tmp
+        wget -q http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz
+        tar xzf lzo-2.10.tar.gz
+        cd lzo-2.10
+        export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
+        ./configure --host=aarch64-linux-android --enable-static --disable-shared
+        make -j$(nproc)
+        mkdir -p $GITHUB_WORKSPACE/android-deps/include/lzo
+        cp include/lzo/*.h $GITHUB_WORKSPACE/android-deps/include/lzo/
+        cp src/.libs/liblzo2.a $GITHUB_WORKSPACE/android-deps/lib/
 
     - name: Configure CMake for Android
       run: |
@@ -257,6 +284,7 @@ jobs:
           -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
           -DANDROID_ABI=${{ matrix.abi }} \
           -DANDROID_PLATFORM=android-29 \
+          -DANDROID_DEPS_DIR=$GITHUB_WORKSPACE/android-deps \
           -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} \
           -DBUILD_SHARED_LIBS=OFF \
           -DXRAY_USE_LUAJIT=OFF \
