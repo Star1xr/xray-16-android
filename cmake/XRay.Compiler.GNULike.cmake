@@ -229,6 +229,20 @@ elseif (ANDROID)
         endif()
 
         message(STATUS "Using prebuilt Android dependencies from: ${ANDROID_DEPS_DIR}")
+
+        if (NOT XRAY_USE_LUAJIT)
+            set(LUA_INCLUDE_DIR "${ANDROID_DEPS_DIR}/include" CACHE PATH "")
+            set(LUA_LIBRARY "${ANDROID_DEPS_DIR}/lib/liblua.a" CACHE FILEPATH "")
+            set(LUA_LIBRARIES "${LUA_LIBRARY}")
+            set(LUA_FOUND TRUE)
+            if (NOT TARGET Lua51)
+                add_library(Lua51 STATIC IMPORTED)
+                set_target_properties(Lua51 PROPERTIES
+                    IMPORTED_LOCATION "${LUA_LIBRARY}"
+                    INTERFACE_INCLUDE_DIRECTORIES "${LUA_INCLUDE_DIR}"
+                )
+            endif()
+        endif()
     else()
         find_package(SDL2 2.0.18 REQUIRED)
         find_package(OpenAL REQUIRED)

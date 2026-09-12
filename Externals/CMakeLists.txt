@@ -1,6 +1,6 @@
 if (XRAY_USE_LUAJIT)
     add_subdirectory(LuaJIT-proj)
-else()
+elseif (NOT ANDROID)
     find_package(Lua51 REQUIRED)
 endif()
 
