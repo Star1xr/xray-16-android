@@ -122,9 +122,13 @@ jobs:
         cd /tmp
         git clone --depth 1 --branch v1.1.1 https://github.com/xiph/theora.git
         cd theora
+        export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
+        export CXX=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
+        export AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
+        export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
+        export STRIP=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
         ./autogen.sh
-        ./configure --host=$HOST --prefix=$GITHUB_WORKSPACE/android-deps \
-          CC="$CC" AR="$AR" RANLIB="$RANLIB" STRIP="$STRIP" \
+        ./configure --host=aarch64-linux-android --prefix=$GITHUB_WORKSPACE/android-deps \
           --disable-examples --disable-doc --disable-spec
         make -j$(nproc)
         make install
@@ -135,8 +139,10 @@ jobs:
         wget -q http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz
         tar xzf lzo-2.10.tar.gz
         cd lzo-2.10
-        ./configure --host=$HOST --enable-static --disable-shared \
-          CC="$CC" AR="$AR" RANLIB="$RANLIB"
+        export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
+        export AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
+        export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
+        ./configure --host=aarch64-linux-android --enable-static --disable-shared
         make -j$(nproc)
         mkdir -p $GITHUB_WORKSPACE/android-deps/include/lzo
         cp include/lzo/*.h $GITHUB_WORKSPACE/android-deps/include/lzo/
