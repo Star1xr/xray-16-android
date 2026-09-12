@@ -2,6 +2,10 @@
 #include "script_lua_helper.hpp"
 #include "script_debugger.hpp"
 
+#ifndef LUA_OK
+#define LUA_OK 0
+#endif
+
 CDbgLuaHelper* CDbgLuaHelper::m_pThis = nullptr;
 lua_State* CDbgLuaHelper::L = nullptr;
 

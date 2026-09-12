@@ -19,6 +19,10 @@ option(XRAY_USE_ASAN     "Use AddressSanitizer"       OFF)
 option(XRAY_ENABLE_TRACY "Enable tracy profiler"      OFF)
 option(XRAY_USE_GLES     "Use OpenGL ES (Android)"    OFF)
 
+if (XRAY_USE_LUAJIT)
+    add_compile_definitions(XRAY_USE_LUAJIT)
+endif()
+
 include(XRay.Build)
 include(XRay.Packaging)
 

@@ -6,3 +6,4 @@
 
 #include "xrScriptEngine.hpp"
 #include "script_space.hpp"
+#include "LuaCompat.hpp"

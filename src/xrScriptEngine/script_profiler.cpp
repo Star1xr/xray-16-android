@@ -687,12 +687,18 @@ void CScriptProfiler::LuaJitSamplingProfilerAttach(CScriptProfiler* profiler, u3
  * @param data - any pointer to receive in sampling report callback to return feedback
  * @returns whether jit profiler start call was successful
  */
+#ifdef XRAY_USE_LUAJIT
 void CScriptProfiler::LuaJitProfilerStart(lua_State* L, cpcstr mode, luaJIT_profile_callback callback, void* data)
 {
     // Only single JIT profiler can exist and it will not attach with multiple states.
     // Also only VM started profiler can end it, be careful.
     luaJIT_profile_start(L, mode, callback, data);
 }
+#else
+void CScriptProfiler::LuaJitProfilerStart(lua_State*, cpcstr, luaJIT_profile_callback, void*)
+{
+}
+#endif
 
 /*
  * Stop JIT built-in sampling profiler.
@@ -703,10 +709,16 @@ void CScriptProfiler::LuaJitProfilerStart(lua_State* L, cpcstr mode, luaJIT_prof
  *    - cannot stop profiler with VM reference, if it was started with another instance
  *    - no status / possibility to check if stop was successful without modifying luaJIT
  */
+#ifdef XRAY_USE_LUAJIT
 void CScriptProfiler::LuaJitProfilerStop(lua_State* L)
 {
     luaJIT_profile_stop(L);
 }
+#else
+void CScriptProfiler::LuaJitProfilerStop(lua_State*)
+{
+}
+#endif
 
 /*
  * Possible format values for dump:
@@ -719,6 +731,7 @@ void CScriptProfiler::LuaJitProfilerStop(lua_State* L)
  *
  * @returns jit profiler dump as shared string
  */
+#ifdef XRAY_USE_LUAJIT
 shared_str CScriptProfiler::LuaJitProfilerDumpToString(lua_State* L, cpcstr format, int depth)
 {
     string2048 buffer;
@@ -731,6 +744,12 @@ shared_str CScriptProfiler::LuaJitProfilerDumpToString(lua_State* L, cpcstr form
 
     return { buffer };
 }
+#else
+shared_str CScriptProfiler::LuaJitProfilerDumpToString(lua_State*, cpcstr, int)
+{
+    return {};
+}
+#endif
 
 /*
  * Possible format values for dump:
@@ -743,6 +762,7 @@ shared_str CScriptProfiler::LuaJitProfilerDumpToString(lua_State* L, cpcstr form
  *
  * @returns pair with dump char buffer and length of valid dump data in it
  */
+#ifdef XRAY_USE_LUAJIT
 std::pair<cpcstr, size_t> CScriptProfiler::LuaJitProfilerDump(lua_State* L, cpcstr format, int depth)
 {
     size_t length;
@@ -750,6 +770,12 @@ std::pair<cpcstr, size_t> CScriptProfiler::LuaJitProfilerDump(lua_State* L, cpcs
 
     return { dump, length };
 }
+#else
+std::pair<cpcstr, size_t> CScriptProfiler::LuaJitProfilerDump(lua_State*, cpcstr, int)
+{
+    return { "", 0 };
+}
+#endif
 
 /*
  * @returns pair with debug information and status of debug information (whether was able to get info from stack)

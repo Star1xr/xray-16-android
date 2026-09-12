@@ -8,6 +8,10 @@
 
 #include "pch.hpp"
 
+#ifndef LUA_OK
+#define LUA_OK 0
+#endif
+
 #include "Common/Noncopyable.hpp"
 #include "xrCore/ModuleLookup.hpp"
 
@@ -777,7 +781,9 @@ struct luajit
 
     static void allow_escape_sequences(bool allowed)
     {
+#ifdef XRAY_USE_LUAJIT
         lj_allow_escape_sequences(allowed ? 1 : 0);
+#endif
     }
 };
 
@@ -829,8 +835,10 @@ void CScriptEngine::init(export_func exporter, bool loadGlobalNamespace)
     luajit::open_lib(lua(), LUA_OSLIBNAME, luaopen_os);
     luajit::open_lib(lua(), LUA_MATHLIBNAME, luaopen_math);
     luajit::open_lib(lua(), LUA_STRLIBNAME, luaopen_string);
+#ifdef XRAY_USE_LUAJIT
     luajit::open_lib(lua(), LUA_BITLIBNAME, luaopen_bit);
     luajit::open_lib(lua(), LUA_FFILIBNAME, luaopen_ffi);
+#endif
 #ifndef MASTER_GOLD
     luajit::open_lib(lua(), LUA_DBLIBNAME, luaopen_debug);
 #endif
@@ -876,7 +884,9 @@ void CScriptEngine::init(export_func exporter, bool loadGlobalNamespace)
     // Update: '-nojit' option adds garbage to stack and luabind calls fail
     if (!strstr(Core.Params, ARGUMENT_ENGINE_NOJIT))
     {
+#ifdef XRAY_USE_LUAJIT
         luajit::open_lib(lua(), LUA_JITLIBNAME, luaopen_jit);
+#endif
         // Xottab_DUTY: commented this. Let's use default opt level, which is 3
         //RunJITCommand(lua(), "opt.start(2)");
     }
