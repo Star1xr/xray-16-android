@@ -179,6 +179,7 @@ jobs:
         export RANLIB=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
         make posix CC="$CC" AR="$AR" RANLIB="$RANLIB" MYCFLAGS="-I$GITHUB_WORKSPACE/android-deps/include" MYLDFLAGS="-L$GITHUB_WORKSPACE/android-deps/lib" INSTALL_TOP=$GITHUB_WORKSPACE/android-deps
         make install INSTALL_TOP=$GITHUB_WORKSPACE/android-deps
+        cp etc/lua.hpp $GITHUB_WORKSPACE/android-deps/include/
 
     - name: Configure CMake for Android
       run: |
