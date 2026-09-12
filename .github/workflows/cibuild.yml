@@ -29,6 +29,11 @@ jobs:
     - name: Init submodules
       run: |
         git submodule update --init --recursive
+        # Fix pthread_cancel not available on Android bionic
+        sed -i '52a #ifndef __ANDROID__' Externals/GameSpy/src/GameSpy/common/linux/gsThreadLinux.c
+        sed -i '56a #endif' Externals/GameSpy/src/GameSpy/common/linux/gsThreadLinux.c
+        # Fix luabind not finding Lua include dir
+        sed -i 's/target_link_libraries(xrLuabind PUBLIC ${LUA_LIBRARIES})/target_link_libraries(xrLuabind PUBLIC ${LUA_LIBRARIES})\n    if (LUA_INCLUDE_DIR)\n        target_include_directories(xrLuabind PUBLIC ${LUA_INCLUDE_DIR})\n    endif()/' Externals/luabind/src/CMakeLists.txt
 
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
