@@ -11,6 +11,10 @@
 #include <getopt.h>
 #endif
 
+#if defined(XR_PLATFORM_ANDROID)
+#include <SDL.h>
+#endif
+
 // Always request high performance GPU
 extern "C"
 {

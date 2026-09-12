@@ -196,4 +196,6 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: Android-${{ matrix.abi }}-${{ matrix.configuration }}-github-${{ github.run_number }}
-        path: build/libxr_3da.so
+        path: |
+          bin/aarch64/Release/libxr_3da.so
+          android-deps/lib/libSDL2.so
