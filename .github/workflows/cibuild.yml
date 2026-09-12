@@ -26,6 +26,10 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Init submodules
+      run: |
+        git submodule update --init --recursive
+
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
       with:
