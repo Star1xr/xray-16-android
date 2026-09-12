@@ -112,8 +112,7 @@ jobs:
         cp include/vorbis/codec.h $GITHUB_WORKSPACE/android-deps/include/vorbis/
         cp include/vorbis/vorbisfile.h $GITHUB_WORKSPACE/android-deps/include/vorbis/
         cp include/vorbis/vorbisenc.h $GITHUB_WORKSPACE/android-deps/include/vorbis/
-        cp build/libvorbis.a $GITHUB_WORKSPACE/android-deps/lib/
-        cp build/libvorbisfile.a $GITHUB_WORKSPACE/android-deps/lib/
+        find build -name "*.a" -exec cp {} $GITHUB_WORKSPACE/android-deps/lib/ \;
 
     - name: Build libtheora
       run: |
@@ -137,7 +136,7 @@ jobs:
         cp include/theora/theora.h $GITHUB_WORKSPACE/android-deps/include/theora/
         cp include/theora/theoraenc.h $GITHUB_WORKSPACE/android-deps/include/theora/
         cp include/theora/theoradec.h $GITHUB_WORKSPACE/android-deps/include/theora/
-        cp build/libtheora.a $GITHUB_WORKSPACE/android-deps/lib/
+        find build -name "*.a" -exec cp {} $GITHUB_WORKSPACE/android-deps/lib/ \;
 
     - name: Build LZO
       run: |
